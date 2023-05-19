@@ -3,9 +3,7 @@ from spacy.lang.en.stop_words import STOP_WORDS
 from string import punctuation
 from collections import Counter
 from heapq import nlargest 
-import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer ,pipeline
-from diffusers import StableDiffusionPipeline
+from transformers import pipeline
 from parrot import Parrot
 
 def paraphraser(doc):

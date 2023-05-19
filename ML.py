@@ -4,23 +4,24 @@ from string import punctuation
 from collections import Counter
 from heapq import nlargest 
 import torch
-from transformers import BartForConditionalGeneration, BartTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer ,pipeline
 from diffusers import StableDiffusionPipeline
-
+from parrot import Parrot
 
 def paraphraser(doc):
-    input_sentence=doc
-    model = BartForConditionalGeneration.from_pretrained('eugenesiow/bart-paraphrase')
-    device = torch.device = torch.device('cpu')
-    model= model.to(device)
-    tokenizer= BartTokenizer.from_pretrained('eugenesiow/bart-paraphrase')
-    batch= tokenizer(input_sentence, return_tensors='pt')
-    generated_ids= model.generate(batch['input_ids'])
-    generated_sentence= tokenizer.batch_decode(generated_ids, skip_special_tokens=True)
-    return generated_sentence
+    nlp =spacy.load("en_core_web_sm")
+    doc = nlp(doc)
+    sentences = [sent.text.strip() for sent in doc.sents]
+    parrot = Parrot(model_tag="prithivida/parrot_paraphraser_on_T5", use_gpu=False)
+    res=''
+    for phrase in sentences:
+        para_phrases = parrot.augment(input_phrase=phrase)
+        for para_phrase in para_phrases:
+            res=res+ para_phrase[0]
+    return res
 
 
-
+#paraphraser( "One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections. The bedding was hardly able to cover it and seemed ready to slide off any moment. His many legs, pitifully thin compared with the size of the rest of him, waved about helplessly as he looked. ")
 
 def summarize(doc):
     nlp = spacy.load("en_core_web_sm")
@@ -60,14 +61,10 @@ def summarize(doc):
     return summary
 
 
-def textToImage(text):
-    model_id = "runwayml/stable-diffusion-v1-5"
-    pipe= StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16)
-    pipe= pipe.to("cuda")
+def generator(prompt):
+    generator = pipeline('text-generation', model = 'gpt2')
+    return generator(prompt, max_length = 600, num_return_sequences=1)[0]['generated_text']
 
-    prompt= text 
-    image= pipe(prompt).image[0]
-    image.save("tmp.png")
-    return image
 
-result=textToImage("A football player cartoon")
+#generator("One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections. The bedding was hardly able to cover it and seemed ready to slide off any moment. His many legs, pitifully thin compared with the size of the rest of him, waved about helplessly as he looked. ")
+#result=textToImage("A football player cartoon")

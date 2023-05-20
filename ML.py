@@ -1,4 +1,5 @@
-import spacy 
+from textgenie import TextGenie
+import spacy
 from spacy.lang.en.stop_words import STOP_WORDS
 from string import punctuation
 from collections import Counter
@@ -6,17 +7,19 @@ from heapq import nlargest
 from transformers import pipeline
 from parrot import Parrot
 
-def paraphraser(doc):
+def paraphraser(docs):
     nlp =spacy.load("en_core_web_sm")
-    doc = nlp(doc)
+    doc= nlp(docs)
     sentences = [sent.text.strip() for sent in doc.sents]
-    parrot = Parrot(model_tag="prithivida/parrot_paraphraser_on_T5", use_gpu=False)
-    res=''
-    for phrase in sentences:
-        para_phrases = parrot.augment(input_phrase=phrase)
-        for para_phrase in para_phrases:
-            res=res+ para_phrase[0]
-    return res
+    textgenie = TextGenie("hetpandya/t5-small-tapaco", "bert-base-uncased")
+    sentences =sentences
+    res=textgenie.magic_lamp(
+    sentences, "paraphrase: ", n_mask_predictions=5, convert_to_active=True
+    )
+    result="" 
+    for i in res:
+        result= result+i
+    return result
 
 
 #paraphraser( "One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections. The bedding was hardly able to cover it and seemed ready to slide off any moment. His many legs, pitifully thin compared with the size of the rest of him, waved about helplessly as he looked. ")

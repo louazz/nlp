@@ -5,7 +5,6 @@ from string import punctuation
 from collections import Counter
 from heapq import nlargest 
 from transformers import pipeline
-from parrot import Parrot
 
 def paraphraser(docs):
     nlp =spacy.load("en_core_web_sm")

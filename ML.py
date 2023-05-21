@@ -10,14 +10,13 @@ def paraphraser(docs):
     nlp =spacy.load("en_core_web_sm")
     doc= nlp(docs)
     sentences = [sent.text.strip() for sent in doc.sents]
+
     textgenie = TextGenie("hetpandya/t5-small-tapaco", "bert-base-uncased")
-    sentences =sentences
-    res=textgenie.magic_lamp(
-    sentences, "paraphrase: ", n_mask_predictions=1, convert_to_active=True , n_paraphrase_predictions=1
-    )
     result="" 
-    for i in res:
-        result= result+i
+
+    for i in sentences:
+        res=textgenie.augment_sent_t5(i,"paraphrase: ",max_length=200, n_predictions=1)
+        result= result+res[0]
     return result
 
 

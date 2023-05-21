@@ -1,13 +1,12 @@
+FROM python:3
 
-FROM python:3.8-slim-buster
+WORKDIR /usr/src/app
 
-WORKDIR /python-docker
-RUN apt-get -y update && apt-get install -y git
-COPY requirements.txt requirements.txt
-RUN pip3 install -r requirements.txt
-RUN pip3 install gunicorn flask
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
+RUN pip install gunicorn flask spacy torch transformers textgenie flask_cors
 
 ENTRYPOINT ["sh","./gunicorn.sh"]
 

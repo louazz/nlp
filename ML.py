@@ -13,7 +13,7 @@ def paraphraser(docs):
     textgenie = TextGenie("hetpandya/t5-small-tapaco", "bert-base-uncased")
     sentences =sentences
     res=textgenie.magic_lamp(
-    sentences, "paraphrase: ", n_mask_predictions=5, convert_to_active=True
+    sentences, "paraphrase: ", n_mask_predictions=1, convert_to_active=True , n_paraphrase_predictions=1
     )
     result="" 
     for i in res:
@@ -21,8 +21,8 @@ def paraphraser(docs):
     return result
 
 
-#paraphraser( "One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections. The bedding was hardly able to cover it and seemed ready to slide off any moment. His many legs, pitifully thin compared with the size of the rest of him, waved about helplessly as he looked. ")
-
+#res=paraphraser( "One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections. The bedding was hardly able to cover it and seemed ready to slide off any moment. His many legs, pitifully thin compared with the size of the rest of him, waved about helplessly as he looked. ")
+#print(res)
 def summarize(doc):
     nlp = spacy.load("en_core_web_sm")
     doc= nlp(doc)
@@ -63,8 +63,9 @@ def summarize(doc):
 
 def generator(prompt):
     generator = pipeline('text-generation', model = 'gpt2')
-    return generator(prompt, max_length = 600, num_return_sequences=1)[0]['generated_text']
+    return generator(prompt, max_length = 300, num_return_sequences=1)[0]['generated_text']
 
 
-#generator("One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections. The bedding was hardly able to cover it and seemed ready to slide off any moment. His many legs, pitifully thin compared with the size of the rest of him, waved about helplessly as he looked. ")
+#res=generator("One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections. The bedding was hardly able to cover it and seemed ready to slide off any moment. His many legs, pitifully thin compared with the size of the rest of him, waved about helplessly as he looked. ")
+#print(res)
 #result=textToImage("A football player cartoon")
